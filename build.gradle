@@ -1,0 +1,55 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+group = 'com.qcells'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+
+	// web (톰캣 내장)
+    //compile('org.springframework.boot:spring-boot-starter-web')
+
+    // implementation: 의존 라이브러리 수정시 본 모듈까지만 재빌드
+    // 본 모듈을 의존하는 모듈은 해당 라이브러리의 api 를 사용할 수 없음
+    // A(api) <- B <- C 의 경우 C 에서 A 를 접근할 수 있음
+    // A 수정시 B 와 C 모두 재빌드
+
+    // compile(api): 의존 라이브러리 수정시 본 모듈을 의존하는 모듈들도 재빌드
+    // 본 모듈을 의존하는 모듈들도 해당 라이브러리의 api 를 사용할 수 있음
+    // gradle 3.0부터 compile deprecate
+    // A(implementation) <- B <- C 의 경우 C 에서 A 를 접근할 수 없음
+    // A 수정시 B 까지 재빌드
+
+    implementation "org.seasar.doma:doma-core:2.38.0"
+    annotationProcessor "org.seasar.doma:doma-processor:2.38.0"
+
+    compile group: 'org.apache.skywalking', name: 'apm-resttemplate-4.3.x-plugin', version: '8.0.1'
+
+    testCompile group: 'org.mock-server', name: 'mockserver-netty', version: '5.11.0'
+}
+
+test {
+	useJUnitPlatform()
+}
